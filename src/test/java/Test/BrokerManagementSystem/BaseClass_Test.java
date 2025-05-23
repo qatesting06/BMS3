@@ -2,6 +2,7 @@ package Test.BrokerManagementSystem;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.UUID;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -35,36 +36,42 @@ public class BaseClass_Test {
 	private Dashboard dashboard;
 	private Login_page loginPage;
 
-	@BeforeClass
-	public void setUp() throws IOException {
-        
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments(
-		    "--headless=new",               // Headless mode for CI
-		    "--disable-dev-shm-usage",      // Avoid limited /dev/shm on CI
-		    "--no-sandbox",                 // Required for root/chroot environments
-		    "--window-size=1920,1080"       // Avoid default small viewport in headless
-		);
-		// Initialize ReadConfigFile
-		ReadConfigFile config = new ReadConfigFile(driver);
 
-		driver = new ChromeDriver(options);
-		driver.manage().window().maximize();
-		driver.manage().deleteAllCookies();
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-		driver.get(config.getURL());
+@BeforeClass
+public void setUp() throws IOException {
+    ChromeOptions options = new ChromeOptions();
 
-		// Initialize Page Objects
-		loginPage = new Login_page(driver);
-		companies = new Companies(driver);
-		deals = new Deals(driver);
-		bankAccounts = new BankAccounts(driver);
-		brokers = new Brokers(driver);
-		expenses = new Expenses(driver);
-		advances = new Advances(driver);
-		slab = new Slab(driver);
-		dashboard = new Dashboard(driver);
-	}
+    // 🔐 Prevent user profile conflict in CI
+    String userDataDir = System.getProperty("java.io.tmpdir") + "/chrome-profile-" + UUID.randomUUID();
+    options.addArguments(
+        "--headless=new",                  // For CI environments
+        "--disable-dev-shm-usage",         // Avoid memory issues
+        "--no-sandbox",                    // Required in containers
+        "--window-size=1920,1080",         // Full HD view
+        "--user-data-dir=" + userDataDir   // ✅ Prevent Chrome profile conflict
+    );
+
+    driver = new ChromeDriver(options);
+
+    // Correct: use the driver you've just created
+    config = new ReadConfigFile(driver);
+
+    driver.manage().window().maximize();
+    driver.manage().deleteAllCookies();
+    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+    driver.get(config.getURL());
+
+    // Initialize Page Objects
+    loginPage = new Login_page(driver);
+    companies = new Companies(driver);
+    deals = new Deals(driver);
+    bankAccounts = new BankAccounts(driver);
+    brokers = new Brokers(driver);
+    expenses = new Expenses(driver);
+    advances = new Advances(driver);
+    slab = new Slab(driver);
+    dashboard = new Dashboard(driver);
+}
 
 	@Test(priority = 1)
 	public void testLoginPage() throws IOException {
