@@ -48,7 +48,7 @@ public class BaseClass_Test {
 		// Initialize ReadConfigFile
 		ReadConfigFile config = new ReadConfigFile(driver);
 
-		driver = new ChromeDriver();
+		driver = new ChromeDriver(options);
 		driver.manage().window().maximize();
 		driver.manage().deleteAllCookies();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));

@@ -5,9 +5,14 @@
     <classes>
       <class name="Test.BrokerManagementSystem.BaseClass_Test">
         <methods>
+          <include name="testCreateExpenses"/>
           <include name="testCreateCompany"/>
           <include name="setUp"/>
+          <include name="testCreateBrokers"/>
+          <include name="testViewDashboard"/>
+          <include name="testCreateSlab"/>
           <include name="testCreateDeals"/>
+          <include name="testCreateAdvances"/>
           <include name="testCreateBankAccounts"/>
         </methods>
       </class> <!-- Test.BrokerManagementSystem.BaseClass_Test -->
