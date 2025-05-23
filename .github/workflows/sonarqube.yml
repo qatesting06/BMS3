@@ -1,0 +1,31 @@
+name: SonarQube Scan
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+
+      - name: Run SonarQube Analysis
+        run: mvn clean verify sonar:sonar \
+          -Dsonar.projectKey=Broker-Management-System \
+          -Dsonar.host.url=https://0722-122-161-49-134.ngrok-free.app \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
